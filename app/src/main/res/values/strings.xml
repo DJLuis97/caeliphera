@@ -1,3 +1,7 @@
 <resources>
   <string name="app_name">caeliphera</string>
+
+  // Login Activity
+  <string name="text_btn_login">Iniciar Sesión</string>
+  <string name="title_login">Acceder</string>
 </resources>
