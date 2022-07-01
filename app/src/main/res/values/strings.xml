@@ -4,4 +4,9 @@
   // Login Activity
   <string name="text_btn_login">Iniciar Sesión</string>
   <string name="title_login">Acceder</string>
+  // Main Activity
+  <string name="text_btn_logout">Cerrar Sesión</string>
+  <string name="ma_text_btn_store_recopilador">Ingresar Recopilador</string>
+  // Store Recopilador Activity
+  <string name="sra_text_btn_back">Home</string>
 </resources>
