@@ -1,7 +1,9 @@
 package com.djluis.caeliphera;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,16 +62,24 @@ public class LoginActivity extends AppCompatActivity {
     JsonObjectRequest jor = new JsonObjectRequest(
         Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
       @Override public void onResponse (JSONObject response) {
+        SQLite sqLite = new SQLite(
+            LoginActivity.this, "caeliphera", null, 1);
+        SQLiteDatabase writable_db = sqLite.getWritableDatabase();
         try {
-          OutputStreamWriter osw = new OutputStreamWriter(
-              openFileOutput("auth.txt", Activity.MODE_PRIVATE));
-          osw.write(response.toString());
-          osw.flush();
-          osw.close();
+          String email = response.getJSONObject("user").getString("email");
+          String full_name = response.getJSONObject("user").getJSONObject("person")
+                                     .getString("full_name");
+          String        id    = response.getJSONObject("user").getString("id");
+          String        token = response.getString("access_token");
+          ContentValues cv    = new ContentValues();
+          cv.put("id", id);
+          cv.put("email", email);
+          cv.put("full_name", full_name);
+          cv.put("token", token);
+          writable_db.insert("users", null, cv);
+          writable_db.close();
           startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        } catch (IOException e) {
-          Log.e(
-              "response", "(╯°□°）╯︵ ┻━┻ |> " + response.toString());
+        } catch (JSONException e) {
           Log.e(
               "exception", "(╯°□°）╯︵ ┻━┻ |> " + e.getMessage());
           Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();

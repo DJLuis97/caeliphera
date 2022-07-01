@@ -4,4 +4,6 @@
   // Login Activity
   <string name="text_btn_login">Iniciar Sesión</string>
   <string name="title_login">Acceder</string>
+  // Main Activity
+  <string name="text_btn_logout">Cerrar Sesión</string>
 </resources>
