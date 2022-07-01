@@ -1,5 +1,7 @@
 package com.djluis.caeliphera;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     text_password_login = findViewById(R.id.text_password_login);
     text_username_login = findViewById(R.id.text_username_login);
     btn_login_login = findViewById(R.id.btn_login_login);
-    helper_username_login = findViewById(R.id.helper_username_login);
+    helper_username_login = findViewById(R.id.welcome_main);
     helper_password_login = findViewById(R.id.helper_password_login);
     btn_login_login.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick (View view) {
@@ -56,8 +60,20 @@ public class LoginActivity extends AppCompatActivity {
     JsonObjectRequest jor = new JsonObjectRequest(
         Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
       @Override public void onResponse (JSONObject response) {
-        Log.e(
-            "loginAction", "(╯°□°）╯︵ ┻━┻ |> " + response.toString());
+        try {
+          OutputStreamWriter osw = new OutputStreamWriter(
+              openFileOutput("auth.txt", Activity.MODE_PRIVATE));
+          osw.write(response.toString());
+          osw.flush();
+          osw.close();
+          startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        } catch (IOException e) {
+          Log.e(
+              "response", "(╯°□°）╯︵ ┻━┻ |> " + response.toString());
+          Log.e(
+              "exception", "(╯°□°）╯︵ ┻━┻ |> " + e.getMessage());
+          Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
+        }
       }
     }, new Response.ErrorListener() {
       @Override public void onErrorResponse (VolleyError error) {
