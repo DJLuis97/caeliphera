@@ -32,13 +32,19 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
   private TextView welcome_main;
-  private Button   btn_logout;
+  private Button   btn_logout, btn_store_recopilador;
 
   @Override protected void onCreate (Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     welcome_main = (TextView) findViewById(R.id.welcome_main);
     btn_logout = (Button) findViewById(R.id.btn_logout);
+    btn_store_recopilador = (Button) findViewById(R.id.btn_store_recopilador);
+    btn_store_recopilador.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick (View view) {
+        startActivity(new Intent(MainActivity.this, StoreRecopiladorActivity.class));
+      }
+    });
     btn_logout.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick (View view) {
         lgout();
