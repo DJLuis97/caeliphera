@@ -9,4 +9,5 @@
   <string name="ma_text_btn_store_recopilador">Ingresar Recopilador</string>
   // Store Recopilador Activity
   <string name="sra_text_btn_back">Home</string>
+  <string name="sra_text_btn_store">Guardar</string>
 </resources>

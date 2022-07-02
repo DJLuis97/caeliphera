@@ -15,44 +15,10 @@
     android:text="@string/sra_text_btn_back"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.498"
+    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.944" />
-
-  <EditText
-    android:id="@+id/txt_ci_recopilador"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
-    android:ems="10"
-    android:hint="Cédula"
-    android:inputType="textPersonName"
-    android:minHeight="48dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.497"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.071" />
-
-  <EditText
-    android:id="@+id/txt_birth_recopilador"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
-    android:ems="10"
-    android:hint="Cumpleaños"
-    android:inputType="date"
-    android:minHeight="48dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.497"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/txt_ci_recopilador"
-    app:layout_constraintVertical_bias="0.094" />
+    app:layout_constraintVertical_bias="0.95" />
 
   <EditText
     android:id="@+id/txt_first_name_recopilador"
@@ -62,14 +28,14 @@
     android:layout_marginEnd="32dp"
     android:ems="10"
     android:hint="Nombres"
-    android:minHeight="48dp"
     android:inputType="textPersonName"
+    android:minHeight="48dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/txt_birth_recopilador"
-    app:layout_constraintVertical_bias="0.105" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.3" />
 
   <EditText
     android:id="@+id/text_last_name_recopilador"
@@ -79,12 +45,43 @@
     android:layout_marginEnd="32dp"
     android:ems="10"
     android:hint="Apellidos"
-    android:minHeight="48dp"
     android:inputType="textPersonName"
+    android:minHeight="48dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.497"
+    app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/txt_first_name_recopilador"
-    app:layout_constraintVertical_bias="0.131" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.2" />
+
+  <EditText
+    android:id="@+id/txt_ci_recopilador"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:ems="10"
+    android:hint="Cédula"
+    android:inputType="numberSigned"
+    android:minHeight="48dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.1" />
+
+  <Button
+    android:id="@+id/btn_store_recopilador"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:text="@string/sra_text_btn_store"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.85" />
 </androidx.constraintlayout.widget.ConstraintLayout>
