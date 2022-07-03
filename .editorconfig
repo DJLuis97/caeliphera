@@ -264,18 +264,17 @@ ij_editorconfig_space_before_comma = false
 ij_editorconfig_spaces_around_assignment_operators = true
 
 [{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul}]
-indent_size = 4
-indent_style = space
-tab_width = 4
-ij_continuation_indent_size = 4
+max_line_length = 120
+ij_continuation_indent_size = 2
+ij_visual_guides = 120
 ij_xml_align_attributes = false
 ij_xml_align_text = false
-ij_xml_attribute_wrap = normal
+ij_xml_attribute_wrap = on_every_item
 ij_xml_block_comment_at_first_column = true
 ij_xml_keep_blank_lines = 2
 ij_xml_keep_indents_on_empty_lines = false
-ij_xml_keep_line_breaks = false
-ij_xml_keep_line_breaks_in_text = true
+ij_xml_keep_line_breaks = true
+ij_xml_keep_line_breaks_in_text = false
 ij_xml_keep_whitespaces = false
 ij_xml_keep_whitespaces_around_cdata = preserve
 ij_xml_keep_whitespaces_inside_cdata = false
