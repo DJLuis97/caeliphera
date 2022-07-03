@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -34,19 +36,15 @@ import java.util.Map;
 
 public class StoreRecopiladorActivity extends AppCompatActivity {
 	private EditText txt_ci_recopilador, txt_first_name_recopilador, text_last_name_recopilador;
-	private Spinner sp_parroquia_recopilador;
+	private AutoCompleteTextView auto_complete_text_parroquia;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store_recopilador);
 		setUpView();
-		List<Parroquia> lp = llenar();
-		ArrayAdapter<Parroquia> aap = new ArrayAdapter<>(getApplicationContext(),
-				com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-				lp
-		);
-		sp_parroquia_recopilador.setAdapter(aap);
+		ArrayAdapter<Parroquia> aap = new ArrayAdapter<Parroquia>(this, R.layout.list_item, llenar());
+		auto_complete_text_parroquia.setAdapter(aap);
 	}
 
 	private List<Parroquia> llenar () {
@@ -104,7 +102,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		text_last_name_recopilador = (EditText) findViewById(R.id.text_last_name_recopilador);
 		txt_ci_recopilador = (EditText) findViewById(R.id.txt_ci_recopilador);
 		txt_first_name_recopilador = (EditText) findViewById(R.id.txt_first_name_recopilador);
-		sp_parroquia_recopilador = (Spinner) findViewById(R.id.sp_parroquia_recopilador);
+		auto_complete_text_parroquia = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_parroquia);
 		((Button) findViewById(R.id.btn_back_store_recopilador)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
@@ -115,6 +113,13 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			@Override
 			public void onClick (View view) {
 				Toast.makeText(StoreRecopiladorActivity.this, "Recopilador Guardado", Toast.LENGTH_SHORT).show();
+			}
+		});
+		auto_complete_text_parroquia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
+				String item = ((Parroquia) adapterView.getItemAtPosition(i)).getName();
+				Toast.makeText(getApplicationContext(), "Item => " + item, Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
