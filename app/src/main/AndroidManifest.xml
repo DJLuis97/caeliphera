@@ -4,6 +4,10 @@
 	package="com.djluis.caeliphera">
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- Always include this permission when use location -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<!-- Include only if your app benefits from precise location access. -->
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 	<application
 		android:allowBackup="true"
