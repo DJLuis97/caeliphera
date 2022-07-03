@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +36,7 @@ import java.util.Map;
 public class StoreRecopiladorActivity extends AppCompatActivity {
 	private EditText txt_ci_recopilador, txt_first_name_recopilador, text_last_name_recopilador;
 	private AutoCompleteTextView auto_complete_text_parroquia;
+	private Map<String, String>  payload;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -56,7 +56,6 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 				@Override
 				public void onResponse (JSONObject response) {
-					Log.d("data => ", response.toString());
 					try {
 						JSONArray ja = response.getJSONArray("parroquias");
 						for (int i = 0; i < ja.length(); i++) {
@@ -103,6 +102,8 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		txt_ci_recopilador = (EditText) findViewById(R.id.txt_ci_recopilador);
 		txt_first_name_recopilador = (EditText) findViewById(R.id.txt_first_name_recopilador);
 		auto_complete_text_parroquia = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_parroquia);
+		payload = new HashMap<>();
+		// Listeners
 		((Button) findViewById(R.id.btn_back_store_recopilador)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
@@ -112,15 +113,62 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		((Button) findViewById(R.id.btn_store_recopilador)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
-				Toast.makeText(StoreRecopiladorActivity.this, "Recopilador Guardado", Toast.LENGTH_SHORT).show();
+				store();
 			}
 		});
 		auto_complete_text_parroquia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
-				String item = ((Parroquia) adapterView.getItemAtPosition(i)).getName();
-				Toast.makeText(getApplicationContext(), "Item => " + item, Toast.LENGTH_SHORT).show();
+				payload.put("parroquia_id", String.valueOf(((Parroquia) adapterView.getItemAtPosition(i)).getId()));
 			}
 		});
+	}
+
+	private void store () {
+		refillPayload();
+		try {
+			String token = FileHelper.getToken(openFileInput("token.txt"));
+			if (token == null) throw new RuntimeException("Token nulo");
+			Log.d("PAYLOAD", payload.toString());
+			String url = "https://caeliphera-api.herokuapp.com/api/v1/recopiladores";
+			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST,
+					url,
+					new JSONObject(payload),
+					new Response.Listener<JSONObject>() {
+						@Override
+						public void onResponse (JSONObject response) {
+							Toast.makeText(StoreRecopiladorActivity.this, "Recopilador Guardado", Toast.LENGTH_SHORT).show();
+							Log.d("RESPONSE", response.toString());
+						}
+					},
+					new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse (VolleyError error) {
+							NetworkResponse response = error.networkResponse;
+							Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_SHORT)
+									 .show();
+						}
+					}
+			) {
+				@Override
+				public Map<String, String> getHeaders () {
+					Map<String, String> headers = new HashMap<>();
+					headers.put("Accept", "application/json");
+					headers.put("Authorization", "Bearer " + token);
+					headers.put("Content-Type", "application/json");
+					return headers;
+				}
+			};
+			Volley.newRequestQueue(this).add(jor);
+		} catch (FileNotFoundException exception) {
+			Log.e("(╯°□°）╯︵ ┻━┻ |>", this.getClass().toString() + "@store -> " + exception.getMessage());
+		}
+	}
+
+	private void refillPayload () {
+		payload.put("ci", txt_ci_recopilador.getText().toString());
+		payload.put("first_name", txt_first_name_recopilador.getText().toString());
+		payload.put("last_name", text_last_name_recopilador.getText().toString());
+		payload.put("birth", "2016-06-30");
 	}
 }

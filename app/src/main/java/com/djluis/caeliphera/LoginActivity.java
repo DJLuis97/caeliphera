@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
 				}
 		) {
 			public Map<String, String> getHeaders () {
-				Map<String, String> headers = new HashMap<String, String>();
+				Map<String, String> headers = new HashMap<>();
 				headers.put("Accept", "application/json");
 				headers.put("Content-Type", "application/json");
 				return headers;
