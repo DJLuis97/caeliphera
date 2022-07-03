@@ -14,4 +14,5 @@
 	<string name="sra_hint_last_name">Apellidos</string>
 	<string name="sra_hint_ci">Cédula</string>
 	<string name="sra_hint_parroquia">Parroquia</string>
+	<string name="sra_hint_encargado">Encargado</string>
 </resources>

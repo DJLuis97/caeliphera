@@ -34,7 +34,7 @@ public class Person {
 		return last_name;
 	}
 
-	public void setLast_name (String last_name) {
+	public void setLastName (String last_name) {
 		this.last_name = last_name;
 	}
 
@@ -46,11 +46,17 @@ public class Person {
 		this.person_id = person_id;
 	}
 
+	public void setFullName (String full_name) {
+		String[] parts = full_name.split(" ");
+		first_name = parts[0];
+		last_name = parts[1];
+	}
+
 	public String getFullName () {
 		return first_name + " " + last_name;
 	}
 
 	public String toString () {
-		return this.getFullName();
+		return getFullName();
 	}
 }
