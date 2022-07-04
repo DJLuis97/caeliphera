@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StoreRecopiladorActivity extends AppCompatActivity {
-	private EditText txt_ci_recopilador, txt_first_name_recopilador, text_last_name_recopilador;
+	private EditText txt_ci_recopilador, txt_first_name_recopilador, text_last_name_recopilador, txt_birth_store_recopilador;
 	private AutoCompleteTextView auto_complete_text_parroquia, auto_complete_text_encargado;
 	private       Map<String, String> payload;
 	private final int                 REQUEST_CODE = 1000;
@@ -250,6 +250,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		text_last_name_recopilador = (EditText) findViewById(R.id.text_last_name_recopilador);
 		txt_ci_recopilador = (EditText) findViewById(R.id.txt_ci_recopilador);
 		txt_first_name_recopilador = (EditText) findViewById(R.id.txt_first_name_recopilador);
+		txt_birth_store_recopilador = (EditText) findViewById(R.id.txt_birth_store_recopilador);
 		auto_complete_text_parroquia = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_parroquia);
 		auto_complete_text_encargado = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_encargado);
 		payload = new HashMap<>();
@@ -336,7 +337,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		payload.put("ci", txt_ci_recopilador.getText().toString());
 		payload.put("first_name", txt_first_name_recopilador.getText().toString());
 		payload.put("last_name", text_last_name_recopilador.getText().toString());
-		payload.put("birth", "2016-06-30");
+		payload.put("birth", txt_birth_store_recopilador.getText().toString());
 	}
 
 	private void showPermissionLocation () {

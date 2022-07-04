@@ -13,6 +13,7 @@
 	<string name="sra_hint_first_name">Nombres</string>
 	<string name="sra_hint_last_name">Apellidos</string>
 	<string name="sra_hint_ci">Cédula</string>
+	<string name="sra_hint_birth">Fecha Nacimiento</string>
 	<string name="sra_hint_parroquia">Parroquia</string>
 	<string name="sra_hint_encargado">Encargado</string>
 </resources>

@@ -91,6 +91,7 @@
 		app:layout_constraintVertical_bias="0.85" />
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:id="@+id/coordinatorLayout2"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="32dp"
@@ -99,8 +100,7 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.4">
+		app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.4">
 		<com.google.android.material.textfield.TextInputLayout
 			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
 			android:layout_width="match_parent"
@@ -115,6 +115,7 @@
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:id="@+id/coordinatorLayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="32dp"
@@ -123,8 +124,7 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintVertical_bias="0.5">
+		app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.5">
 		<com.google.android.material.textfield.TextInputLayout
 			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
 			android:layout_width="match_parent"
@@ -152,4 +152,19 @@
 		app:layout_constraintHorizontal_bias="0.5"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.75" />
+	<EditText
+		android:id="@+id/txt_birth_store_recopilador"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="32dp"
+		android:layout_marginEnd="32dp"
+		android:ems="10"
+		android:hint="@string/sra_hint_birth"
+		android:inputType="date"
+		android:minHeight="48dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.6" />
 </androidx.constraintlayout.widget.ConstraintLayout>
