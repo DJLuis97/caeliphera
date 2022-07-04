@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +28,10 @@ import com.android.volley.toolbox.Volley;
 import com.djluis.caeliphera.entities.Parroquia;
 import com.djluis.caeliphera.entities.Person;
 import com.djluis.caeliphera.io.FileHelper;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,9 +49,8 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	private AutoCompleteTextView auto_complete_text_parroquia, auto_complete_text_encargado;
 	private       Map<String, String> payload;
 	private final int                 REQUEST_CODE = 1000;
-	private       String              latitude, longitude;
-	private ProgressBar progress_bar_store_recopilador;
-	private Button      btn_store_recopilador, btn_back_store_recopilador;
+	private       ProgressBar         progress_bar_store_recopilador;
+	private       Button              btn_store_recopilador, btn_back_store_recopilador;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -71,6 +75,51 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 
 	private void getLocation () {
 		Log.d("getLocation", "SE HA OBTENIDO LA LOCACION");
+		progress_bar_store_recopilador.setVisibility(View.VISIBLE);
+		try {
+			LocationRequest locationRequest = new LocationRequest();
+			locationRequest.setInterval(10000);
+			locationRequest.setFastestInterval(30000);
+			locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			if (ActivityCompat.checkSelfPermission(this,
+				Manifest.permission.ACCESS_FINE_LOCATION
+			) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+				Manifest.permission.ACCESS_COARSE_LOCATION
+			) != PackageManager.PERMISSION_GRANTED) {
+				// TODO: Consider calling
+				//    ActivityCompat#requestPermissions
+				// here to request the missing permissions, and then overriding
+				//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+				//                                          int[] grantResults)
+				// to handle the case where the user grants the permission. See the documentation
+				// for ActivityCompat#requestPermissions for more details.
+				return;
+			}
+			LocationServices.getFusedLocationProviderClient(this)
+											.requestLocationUpdates(locationRequest, new LocationCallback() {
+												@Override
+												public void onLocationResult (@NonNull LocationResult locationResult) {
+													super.onLocationResult(locationResult);
+													LocationServices.getFusedLocationProviderClient(StoreRecopiladorActivity.this)
+																					.removeLocationUpdates(this);
+													if (locationResult.getLocations().size() > 0) {
+														int    latestLocationIndex = locationResult.getLocations().size() - 1;
+														double latitud             = locationResult.getLocations()
+																																			 .get(latestLocationIndex)
+																																			 .getLatitude();
+														double longitude           = locationResult.getLocations()
+																																			 .get(latestLocationIndex)
+																																			 .getLongitude();
+														payload.put("latitude", String.valueOf(latitud));
+														payload.put("longitude", String.valueOf(longitude));
+														progress_bar_store_recopilador.setVisibility(View.GONE);
+													}
+												}
+											}, Looper.myLooper());
+		} catch (Exception exception) {
+			progress_bar_store_recopilador.setVisibility(View.GONE);
+			Log.d("exception", "exception -> " + exception.getMessage());
+		}
 	}
 
 	private boolean finedLocationGranted () {
@@ -236,42 +285,50 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	private void store () {
 		refillPayload();
 		findLocation();
-		try {
-			String token = FileHelper.getToken(openFileInput("token.txt"));
-			if (token == null) throw new RuntimeException("Token nulo");
-			Log.d("PAYLOAD", payload.toString());
-			String url = "https://caeliphera-api.herokuapp.com/api/v1/recopiladores";
-			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST,
-				url,
-				new JSONObject(payload),
-				new Response.Listener<JSONObject>() {
-					@Override
-					public void onResponse (JSONObject response) {
-						Toast.makeText(StoreRecopiladorActivity.this, "Recopilador Guardado", Toast.LENGTH_SHORT).show();
-						startActivity(new Intent(StoreRecopiladorActivity.this, MainActivity.class));
+		if (finedLocationGranted()) {
+			showLoading();
+			try {
+				String token = FileHelper.getToken(openFileInput("token.txt"));
+				if (token == null) throw new RuntimeException("Token nulo");
+				Log.d("PAYLOAD", payload.toString());
+				String url = "https://caeliphera-api.herokuapp.com/api/v1/recopiladores";
+				JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST,
+					url,
+					new JSONObject(payload),
+					new Response.Listener<JSONObject>() {
+						@Override
+						public void onResponse (JSONObject response) {
+							hideLoading();
+							Toast.makeText(StoreRecopiladorActivity.this, "Recopilador Guardado", Toast.LENGTH_SHORT).show();
+							startActivity(new Intent(StoreRecopiladorActivity.this, MainActivity.class));
+						}
+					},
+					new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse (VolleyError error) {
+							hideLoading();
+							NetworkResponse response = error.networkResponse;
+							Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_SHORT)
+									 .show();
+						}
 					}
-				},
-				new Response.ErrorListener() {
+				) {
 					@Override
-					public void onErrorResponse (VolleyError error) {
-						NetworkResponse response = error.networkResponse;
-						Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_SHORT)
-								 .show();
+					public Map<String, String> getHeaders () {
+						Map<String, String> headers = new HashMap<>();
+						headers.put("Accept", "application/json");
+						headers.put("Authorization", "Bearer " + token);
+						headers.put("Content-Type", "application/json");
+						return headers;
 					}
-				}
-			) {
-				@Override
-				public Map<String, String> getHeaders () {
-					Map<String, String> headers = new HashMap<>();
-					headers.put("Accept", "application/json");
-					headers.put("Authorization", "Bearer " + token);
-					headers.put("Content-Type", "application/json");
-					return headers;
-				}
-			};
-			// Volley.newRequestQueue(this).add(jor);
-		} catch (FileNotFoundException exception) {
-			Log.e("(╯°□°）╯︵ ┻━┻ |>", this.getClass().toString() + "@store -> " + exception.getMessage());
+				};
+				Volley.newRequestQueue(this).add(jor);
+			} catch (FileNotFoundException exception) {
+				hideLoading();
+				Log.e("(╯°□°）╯︵ ┻━┻ |>", this.getClass().toString() + "@store -> " + exception.getMessage());
+			}
+		} else {
+			Toast.makeText(StoreRecopiladorActivity.this, "Permiso denegado", Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -283,15 +340,26 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	}
 
 	private void showPermissionLocation () {
-		ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION }, REQUEST_CODE);
+		ActivityCompat.requestPermissions(StoreRecopiladorActivity.this,
+			new String[]{ Manifest.permission.ACCESS_FINE_LOCATION },
+			REQUEST_CODE
+		);
 	}
 
 	@Override
 	public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		Log.d("", "onRequestPermissionsResult -> requestCode" + requestCode);
 		Log.d("", "onRequestPermissionsResult -> permissions" + Arrays.toString(permissions));
 		Log.d("", "onRequestPermissionsResult -> grantResults" + Arrays.toString(grantResults));
+		Log.d("", "onRequestPermissionsResult -> requestCode" + requestCode);
+		if (requestCode == REQUEST_CODE && grantResults.length > 0) {
+			if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				getLocation();
+			} else {
+				Toast.makeText(this, "Por favor, permite la ubicacion para poder realizar esta accion", Toast.LENGTH_LONG)
+						 .show();
+			}
+		}
 	}
 
 	private void showLoading () {
