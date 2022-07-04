@@ -1,6 +1,8 @@
 package com.djluis.caeliphera;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -29,6 +34,7 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,20 +42,44 @@ import java.util.Map;
 public class StoreRecopiladorActivity extends AppCompatActivity {
 	private EditText txt_ci_recopilador, txt_first_name_recopilador, text_last_name_recopilador;
 	private AutoCompleteTextView auto_complete_text_parroquia, auto_complete_text_encargado;
-	private Map<String, String> payload;
+	private       Map<String, String> payload;
+	private final int                 REQUEST_CODE = 1000;
+	private       String              latitude, longitude;
+	private ProgressBar progress_bar_store_recopilador;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_store_recopilador);
 		setUpView();
-		ArrayAdapter<Person> aa_person = new ArrayAdapter<Person>(this, R.layout.list_item, llenarEncargados());
-		ArrayAdapter<Parroquia> aap    = new ArrayAdapter<Parroquia>(this, R.layout.list_item, llenar());
+		ArrayAdapter<Person>    aa_person = new ArrayAdapter<Person>(this, R.layout.list_item, llenarEncargados());
+		ArrayAdapter<Parroquia> aap       = new ArrayAdapter<Parroquia>(this, R.layout.list_item, llenar());
 		auto_complete_text_parroquia.setAdapter(aap);
 		auto_complete_text_encargado.setAdapter(aa_person);
+		findLocation();
+	}
+
+	private void findLocation () {
+		if (finedLocationGranted()) {
+			getLocation();
+		} else {
+			// No location access granted.
+			showPermissionLocation();
+		}
+	}
+
+	private void getLocation () {
+		Log.d("getLocation", "SE HA OBTENIDO LA LOCACION");
+	}
+
+	private boolean finedLocationGranted () {
+		return ActivityCompat.checkSelfPermission(this,
+			Manifest.permission.ACCESS_FINE_LOCATION
+		) == PackageManager.PERMISSION_GRANTED;
 	}
 
 	private List<Person> llenarEncargados () {
+
 		List<Person> encargados = new ArrayList<>();
 		try {
 			String token = FileHelper.getToken(openFileInput("token.txt"));
@@ -58,6 +88,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 				@Override
 				public void onResponse (JSONObject response) {
+					progress_bar_store_recopilador.setVisibility(View.GONE);
 					Log.d("RESPONSE", response.toString());
 					try {
 						JSONArray ja_person = response.getJSONArray("people");
@@ -74,6 +105,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			}, new Response.ErrorListener() {
 				@Override
 				public void onErrorResponse (VolleyError error) {
+					progress_bar_store_recopilador.setVisibility(View.GONE);
 					NetworkResponse response = error.networkResponse;
 					Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_LONG)
 							 .show();
@@ -145,6 +177,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	}
 
 	private void setUpView () {
+		progress_bar_store_recopilador = (ProgressBar) findViewById(R.id.progress_bar_store_recopilador);
 		text_last_name_recopilador = (EditText) findViewById(R.id.text_last_name_recopilador);
 		txt_ci_recopilador = (EditText) findViewById(R.id.txt_ci_recopilador);
 		txt_first_name_recopilador = (EditText) findViewById(R.id.txt_first_name_recopilador);
@@ -180,6 +213,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 
 	private void store () {
 		refillPayload();
+		findLocation();
 		try {
 			String token = FileHelper.getToken(openFileInput("token.txt"));
 			if (token == null) throw new RuntimeException("Token nulo");
@@ -213,7 +247,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 					return headers;
 				}
 			};
-			Volley.newRequestQueue(this).add(jor);
+			// Volley.newRequestQueue(this).add(jor);
 		} catch (FileNotFoundException exception) {
 			Log.e("(╯°□°）╯︵ ┻━┻ |>", this.getClass().toString() + "@store -> " + exception.getMessage());
 		}
@@ -224,5 +258,25 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		payload.put("first_name", txt_first_name_recopilador.getText().toString());
 		payload.put("last_name", text_last_name_recopilador.getText().toString());
 		payload.put("birth", "2016-06-30");
+	}
+
+	private void showPermissionLocation () {
+		ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION }, REQUEST_CODE);
+	}
+
+	@Override
+	public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		Log.d("", "onRequestPermissionsResult -> requestCode" + requestCode);
+		Log.d("", "onRequestPermissionsResult -> permissions" + Arrays.toString(permissions));
+		Log.d("", "onRequestPermissionsResult -> grantResults" + Arrays.toString(grantResults));
+	}
+
+	private void showLoading () {
+		progress_bar_store_recopilador.setVisibility(View.VISIBLE);
+	}
+
+	private void hideLoading () {
+		progress_bar_store_recopilador.setVisibility(View.GONE);
 	}
 }
