@@ -33,6 +33,8 @@ public class ListRecopiladorAdapter extends RecyclerView.Adapter<ListRecopilador
 		@NonNull RecopiladorViewHolder holder, int position
 	) {
 		holder.txt_view_fullname_recopilador.setText(recopiladores.get(position).getFullName());
+		holder.txt_view_ci_recopilador.setText(recopiladores.get(position).getCi());
+		holder.txt_view_parroquia_recopilador.setText(recopiladores.get(position).getParroquia().toString());
 	}
 
 	/**
@@ -46,12 +48,12 @@ public class ListRecopiladorAdapter extends RecyclerView.Adapter<ListRecopilador
 	}
 
 	public class RecopiladorViewHolder extends RecyclerView.ViewHolder {
-		private TextView txt_view_fullname_recopilador, txt_view_email_recopilador, txt_view_parroquia_recopilador;
+		private TextView txt_view_fullname_recopilador, txt_view_ci_recopilador, txt_view_parroquia_recopilador;
 
 		public RecopiladorViewHolder (@NonNull View itemView) {
 			super(itemView);
 			txt_view_fullname_recopilador = (TextView) itemView.findViewById(R.id.txt_view_fullname_recopilador);
-			txt_view_email_recopilador = (TextView) itemView.findViewById(R.id.txt_view_email_recopilador);
+			txt_view_ci_recopilador = (TextView) itemView.findViewById(R.id.txt_view_ci_recopilador);
 			txt_view_parroquia_recopilador = (TextView) itemView.findViewById(R.id.txt_view_parroquia_recopilador);
 		}
 	}
