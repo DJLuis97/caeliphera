@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -51,6 +52,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	private final int                 REQUEST_CODE = 1000;
 	private       ProgressBar         progress_bar_store_recopilador;
 	private       Button              btn_store_recopilador, btn_back_store_recopilador;
+	private TextView txt_view_status;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -253,6 +255,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		txt_birth_store_recopilador = (EditText) findViewById(R.id.txt_birth_store_recopilador);
 		auto_complete_text_parroquia = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_parroquia);
 		auto_complete_text_encargado = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_encargado);
+		txt_view_status = (TextView) findViewById(R.id.txt_view_status);
 		payload = new HashMap<>();
 		btn_back_store_recopilador = ((Button) findViewById(R.id.btn_back_store_recopilador));
 		btn_store_recopilador = ((Button) findViewById(R.id.btn_store_recopilador));
@@ -309,8 +312,13 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 						public void onErrorResponse (VolleyError error) {
 							hideLoading();
 							NetworkResponse response = error.networkResponse;
-							Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_SHORT)
-									 .show();
+							if (response != null) {
+								Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_SHORT)
+										 .show();
+								if (response.statusCode == 422) {
+									txt_view_status.setText("Los datos proporcionados no son válidos.");
+								}
+							}
 						}
 					}
 				) {
@@ -364,6 +372,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	}
 
 	private void showLoading () {
+		txt_view_status.setText("");
 		progress_bar_store_recopilador.setVisibility(View.VISIBLE);
 		btn_back_store_recopilador.setEnabled(false);
 		btn_store_recopilador.setEnabled(false);
