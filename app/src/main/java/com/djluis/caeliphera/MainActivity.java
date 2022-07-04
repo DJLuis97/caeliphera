@@ -26,7 +26,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 	private TextView    welcome_main;
 	private ProgressBar progress_bar_main;
-	private Button      btn_go_store_recopilador, btn_logout;
+	private Button      btn_go_store_recopilador, btn_logout, btn_list_recopilador;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 		progress_bar_main = (ProgressBar) findViewById(R.id.progress_bar_main);
 		btn_go_store_recopilador = (Button) findViewById(R.id.btn_go_store_recopilador);
 		btn_logout = (Button) findViewById(R.id.btn_logout);
+		btn_list_recopilador = (Button) findViewById(R.id.btn_list_recopilador);
 		btn_go_store_recopilador.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
@@ -46,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick (View view) {
 				logout();
+			}
+		});
+		btn_list_recopilador.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick (View view) {
+				startActivity(new Intent(MainActivity.this, ListRecopilador.class));
 			}
 		});
 		if (existsToken()) {
@@ -59,12 +66,14 @@ public class MainActivity extends AppCompatActivity {
 		progress_bar_main.setVisibility(View.VISIBLE);
 		btn_logout.setEnabled(false);
 		btn_go_store_recopilador.setEnabled(false);
+		btn_list_recopilador.setEnabled(false);
 	}
 
 	private void hideLoading () {
 		progress_bar_main.setVisibility(View.GONE);
 		btn_logout.setEnabled(true);
 		btn_go_store_recopilador.setEnabled(true);
+		btn_list_recopilador.setEnabled(true);
 	}
 
 	private void logout () {

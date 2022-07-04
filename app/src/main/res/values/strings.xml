@@ -7,6 +7,7 @@
 	// Main Activity
 	<string name="text_btn_logout">Cerrar Sesión</string>
 	<string name="ma_text_btn_store_recopilador">Ingresar Recopilador</string>
+	<string name="ma_text_btn_list_recopilador">Recopiladores</string>
 	// Store Recopilador Activity
 	<string name="sra_text_btn_back">Home</string>
 	<string name="sra_text_btn_store">Guardar</string>
@@ -16,4 +17,5 @@
 	<string name="sra_hint_birth">Fecha Nacimiento</string>
 	<string name="sra_hint_parroquia">Parroquia</string>
 	<string name="sra_hint_encargado">Encargado</string>
+	// List Recopilador Activity
 </resources>

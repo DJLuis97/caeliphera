@@ -34,17 +34,15 @@
 
 	<Button
 		android:id="@+id/btn_go_store_recopilador"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="32dp"
-		android:layout_marginEnd="32dp"
+		android:layout_width="170dp"
+		android:layout_height="48dp"
 		android:text="@string/ma_text_btn_store_recopilador"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintHorizontal_bias="0.1"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/welcome_main"
-		app:layout_constraintVertical_bias="0.788" />
+		app:layout_constraintVertical_bias="0.8" />
 	<ProgressBar
 		android:id="@+id/progress_bar_main"
 		style="?android:attr/progressBarStyleHorizontal"
@@ -60,4 +58,15 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_bias="0.738" />
+	<Button
+		android:id="@+id/btn_list_recopilador"
+		android:layout_width="170dp"
+		android:layout_height="48dp"
+		android:text="@string/ma_text_btn_list_recopilador"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.867"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.822" />
 </androidx.constraintlayout.widget.ConstraintLayout>
