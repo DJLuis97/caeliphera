@@ -46,6 +46,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	private final int                 REQUEST_CODE = 1000;
 	private       String              latitude, longitude;
 	private ProgressBar progress_bar_store_recopilador;
+	private Button      btn_store_recopilador, btn_back_store_recopilador;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 	}
 
 	private List<Person> llenarEncargados () {
-
+		showLoading();
 		List<Person> encargados = new ArrayList<>();
 		try {
 			String token = FileHelper.getToken(openFileInput("token.txt"));
@@ -88,6 +89,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 				@Override
 				public void onResponse (JSONObject response) {
+					hideLoading();
 					progress_bar_store_recopilador.setVisibility(View.GONE);
 					Log.d("RESPONSE", response.toString());
 					try {
@@ -105,10 +107,18 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			}, new Response.ErrorListener() {
 				@Override
 				public void onErrorResponse (VolleyError error) {
+					hideLoading();
 					progress_bar_store_recopilador.setVisibility(View.GONE);
 					NetworkResponse response = error.networkResponse;
-					Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_LONG)
-							 .show();
+					if (response != null) {
+						if (response.statusCode == 401) {
+							Toast.makeText(StoreRecopiladorActivity.this, "No autorizado", Toast.LENGTH_LONG).show();
+							startActivity(new Intent(StoreRecopiladorActivity.this, LoginActivity.class));
+						} else {
+							Toast.makeText(StoreRecopiladorActivity.this, "Error API => " + response.statusCode, Toast.LENGTH_LONG)
+									 .show();
+						}
+					}
 				}
 			}) {
 				@Override
@@ -121,12 +131,14 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			};
 			Volley.newRequestQueue(this).add(jor);
 		} catch (FileNotFoundException exception) {
+			hideLoading();
 			Log.e("(╯°□°）╯︵ ┻━┻ |>", this.getClass().toString() + "@llenarEncargados -> " + exception.getMessage());
 		}
 		return encargados;
 	}
 
 	private List<Parroquia> llenar () {
+		showLoading();
 		List<Parroquia> parroquias = new ArrayList<>();
 		try {
 			String token = FileHelper.getToken(openFileInput("token.txt"));
@@ -135,6 +147,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 				@Override
 				public void onResponse (JSONObject response) {
+					hideLoading();
 					try {
 						JSONArray ja = response.getJSONArray("parroquias");
 						for (int i = 0; i < ja.length(); i++) {
@@ -150,12 +163,18 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			}, new Response.ErrorListener() {
 				@Override
 				public void onErrorResponse (VolleyError error) {
+					hideLoading();
 					NetworkResponse response = error.networkResponse;
 					if (response != null && response.data != null) {
-						Toast.makeText(StoreRecopiladorActivity.this,
-							"Error de respuesta: " + response.statusCode,
-							Toast.LENGTH_LONG
-						).show();
+						if (response.statusCode == 401) {
+							Toast.makeText(StoreRecopiladorActivity.this, "No autorizado", Toast.LENGTH_LONG).show();
+							startActivity(new Intent(StoreRecopiladorActivity.this, LoginActivity.class));
+						} else {
+							Toast.makeText(StoreRecopiladorActivity.this,
+								"Error de respuesta: " + response.statusCode,
+								Toast.LENGTH_LONG
+							).show();
+						}
 					} else {
 						Log.e("(╯°□°）╯︵ ┻━┻ |>", "StoreRecopiladorActivity@llenar#onErrorResponse -> " + error.toString());
 					}
@@ -171,6 +190,7 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 			};
 			Volley.newRequestQueue(this).add(jor);
 		} catch (FileNotFoundException exception) {
+			hideLoading();
 			Log.e("(╯°□°）╯︵ ┻━┻ |>", "StoreRecopiladorActivity@llenar -> " + exception.getMessage());
 		}
 		return parroquias;
@@ -184,14 +204,16 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 		auto_complete_text_parroquia = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_parroquia);
 		auto_complete_text_encargado = (AutoCompleteTextView) findViewById(R.id.auto_complete_text_encargado);
 		payload = new HashMap<>();
+		btn_back_store_recopilador = ((Button) findViewById(R.id.btn_back_store_recopilador));
+		btn_store_recopilador = ((Button) findViewById(R.id.btn_store_recopilador));
 		// Listeners
-		((Button) findViewById(R.id.btn_back_store_recopilador)).setOnClickListener(new View.OnClickListener() {
+		btn_back_store_recopilador.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
 				startActivity(new Intent(StoreRecopiladorActivity.this, MainActivity.class));
 			}
 		});
-		((Button) findViewById(R.id.btn_store_recopilador)).setOnClickListener(new View.OnClickListener() {
+		btn_store_recopilador.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick (View view) {
 				store();
@@ -274,9 +296,17 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 
 	private void showLoading () {
 		progress_bar_store_recopilador.setVisibility(View.VISIBLE);
+		btn_back_store_recopilador.setEnabled(false);
+		btn_store_recopilador.setEnabled(false);
+		auto_complete_text_encargado.setEnabled(false);
+		auto_complete_text_parroquia.setEnabled(false);
 	}
 
 	private void hideLoading () {
 		progress_bar_store_recopilador.setVisibility(View.GONE);
+		btn_back_store_recopilador.setEnabled(true);
+		btn_store_recopilador.setEnabled(true);
+		auto_complete_text_encargado.setEnabled(true);
+		auto_complete_text_parroquia.setEnabled(true);
 	}
 }
