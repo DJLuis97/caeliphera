@@ -94,6 +94,10 @@ public class ListRecopilador extends AppCompatActivity {
 					NetworkResponse response = error.networkResponse;
 					if (response != null) {
 						Toast.makeText(ListRecopilador.this, "Error API -> " + response.statusCode, Toast.LENGTH_LONG).show();
+						if (response.statusCode == 401) {
+							Toast.makeText(ListRecopilador.this, "No autorizado", Toast.LENGTH_LONG).show();
+							startActivity(new Intent(ListRecopilador.this, LoginActivity.class));
+						}
 					}
 				}
 			}) {
