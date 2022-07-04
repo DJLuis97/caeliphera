@@ -105,13 +105,9 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 													LocationServices.getFusedLocationProviderClient(StoreRecopiladorActivity.this)
 																					.removeLocationUpdates(this);
 													if (locationResult.getLocations().size() > 0) {
-														int    latestLocationIndex = locationResult.getLocations().size() - 1;
-														double latitud             = locationResult.getLocations()
-																																			 .get(latestLocationIndex)
-																																			 .getLatitude();
-														double longitude           = locationResult.getLocations()
-																																			 .get(latestLocationIndex)
-																																			 .getLongitude();
+														int latestLocationIndex = locationResult.getLocations().size() - 1;
+														double latitud = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+														double longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
 														payload.put("latitude", String.valueOf(latitud));
 														payload.put("longitude", String.valueOf(longitude));
 														progress_bar_store_recopilador.setVisibility(View.GONE);
@@ -317,6 +313,10 @@ public class StoreRecopiladorActivity extends AppCompatActivity {
 										 .show();
 								if (response.statusCode == 422) {
 									txt_view_status.setText("Los datos proporcionados no son válidos.");
+								}
+								if (response.statusCode == 401) {
+									Toast.makeText(StoreRecopiladorActivity.this, "Acceso no autorizado ", Toast.LENGTH_SHORT).show();
+									startActivity(new Intent(StoreRecopiladorActivity.this, LoginActivity.class));
 								}
 							}
 						}
